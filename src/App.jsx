@@ -1,34 +1,22 @@
 import "./App.css";
 import React from "react";
+import Start from "./components/Start"
+import Quiz from "./components/Quiz"
 
-function App() {
+export default function App() {
   const [page, setPage] = React.useState("start");
 
   const switchPage = function (switchTo) {
     switch (switchTo) {
       case "quiz":
-        setPage("quiz")
+        setPage("quiz");
         break;
       default:
-        setPage("start")
+        setPage("start");
     }
   };
 
-  const startPage = (
-    <div className="startPage">
-      <h1>start page</h1>
-      <button onClick={() => switchPage("quiz")}>btn</button>
-    </div>
-  );
-
-  const quizPage = (
-    <div className="quizPage">
-      <h1>quiz page</h1>
-      <button onClick={() => switchPage("start")}>btn</button>
-    </div>
-  );
-
-  const currentPage = () => {
+  const getPage = () => {
     switch (page) {
       case "quiz":
         return quizPage;
@@ -37,7 +25,13 @@ function App() {
     }
   };
 
-  return <div className="App">{currentPage()}</div>;
-}
+  const startPage = (
+    <Start loadQuizPage = {() => switchPage("quiz")} />
+  );
 
-export default App;
+  const quizPage = (
+    <Quiz loadStartPage={() => switchPage("start")} />
+  );
+
+  return <div className="App">{getPage()}</div>;
+}
