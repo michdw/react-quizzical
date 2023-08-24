@@ -1,0 +1,20 @@
+.question {
+    font-weight: bold;
+}
+
+.option {
+    color: white;
+    margin: 0 1em
+}
+
+.unrevealed-option {
+    background-color: gray;
+}
+
+.correct-answer {
+    background: darkgreen;
+}
+
+.incorrect-answer {
+    background-color: black;
+}
