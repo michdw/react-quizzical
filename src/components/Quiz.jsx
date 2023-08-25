@@ -1,5 +1,6 @@
 import React from "react";
 import "./Quiz.css";
+import {decode} from "html-entities"
 
 export default function Quiz(props) {
   const [quiz, setQuiz] = React.useState();
@@ -24,7 +25,7 @@ export default function Quiz(props) {
         .json()
         .then((data) => {
           setQuiz(data);
-          console.log(data);
+          console.log(data)
         })
         .catch((error) => console.log(error))
     );
@@ -48,9 +49,10 @@ export default function Quiz(props) {
     let allOptions = [...result.incorrect_answers]
       .concat(result.correct_answer)
       .sort();
-    return allOptions.map((option) => {
+    return allOptions.map((option, index) => {
+      option = decode(option)
       return (
-        <span
+        <span key={index}
           className="option unrevealed-option"
           data-correct={option === result.correct_answer ? "true" : "false"}
         >
@@ -61,9 +63,9 @@ export default function Quiz(props) {
   }
 
   const quizData = dataFetchedRef.current ? (
-    quiz.results.map((result) => (
-      <div>
-        <p className="question">{result.question}</p>
+    quiz.results.map((result, index) => (
+      <div key={index}>
+        <p className="question">{decode(result.question)}</p>
         <div>
           <div>{getOptions(result)}</div>
         </div>
@@ -75,7 +77,7 @@ export default function Quiz(props) {
 
   const actionButton = () => {
     let btnText = active ? "start new quiz" : "show answers";
-    return <button onClick={toggleActive}>{btnText}</button>;
+    return <button disabled={!dataFetchedRef.current} onClick={toggleActive}>{btnText}</button>;
   };
 
   return (
