@@ -5,13 +5,22 @@ import { decode } from "html-entities";
 export default function Quiz(props) {
   const [quiz, setQuiz] = React.useState();
   const [active, setActive] = React.useState(false);
+  const [selections, setSelections] = React.useState([null, null, null]);
   const dataFetchedRef = React.useRef(false);
 
   React.useEffect(() => {
     if (dataFetchedRef.current) return;
     dataFetchedRef.current = true;
     getNewQuiz();
+  }, []);
+
+const updateUserChoice = (questionIndex, index) => {
+  setSelections((prevSelections) => {
+    const newSelections = [...prevSelections];
+    newSelections[questionIndex] = index;
+    return newSelections;
   });
+};
 
   function toggleActive() {
     setActive(!active);
@@ -20,7 +29,7 @@ export default function Quiz(props) {
   }
 
   function getNewQuiz() {
-    fetch("https://opentdb.com/api.php?amount=10").then((resp) =>
+    fetch("https://opentdb.com/api.php?amount=3").then((resp) =>
       resp
         .json()
         .then((data) => {
@@ -61,26 +70,26 @@ export default function Quiz(props) {
       .sort();
     return allOptions.map((option, index) => {
       let optionIndex = `${questionIndex}.${index}`;
-      option = decode(option);
       return (
-        <span key={index} className="option unrevealed-option">
-          <label htmlFor={optionIndex} onClick={showChoice}>
-            <input
-              type="radio"
-              name={questionIndex}
-              id={optionIndex}
-              value={optionIndex}
-            />
-            <i>{option}</i>
-          </label>
-        </span>
+        <label
+          className={`option unrevealed-option ${
+            selections[questionIndex] === index ? "selected-option" : ""
+          }`}
+          key={optionIndex}
+          htmlFor={optionIndex}
+          onClick={() => updateUserChoice(questionIndex, index)} // Pass as a callback
+        >
+          <input
+            type="radio"
+            name={questionIndex}
+            id={optionIndex}
+            value={option}
+          />
+          <i>{decode(option)}</i>
+        </label>
       );
     });
   }
-
-  const showChoice = ((event) => {
-    
-  })
 
   const quizData = dataFetchedRef.current ? (
     quiz.results.map((result, index) => (
