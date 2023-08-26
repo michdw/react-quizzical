@@ -12,15 +12,16 @@ export default function Quiz(props) {
     if (dataFetchedRef.current) return;
     dataFetchedRef.current = true;
     getNewQuiz();
-  }, []);
-
-const updateUserChoice = (questionIndex, index) => {
-  setSelections((prevSelections) => {
-    const newSelections = [...prevSelections];
-    newSelections[questionIndex] = index;
-    return newSelections;
   });
-};
+
+  const updateUserChoice = (questionIndex, index) => {
+    setSelections((prevSelections) => { 
+      const newSelections = [...prevSelections]
+      newSelections[questionIndex] = index
+      // console.log(selections)
+      return newSelections
+    })
+  };
 
   function toggleActive() {
     setActive(!active);
@@ -72,14 +73,15 @@ const updateUserChoice = (questionIndex, index) => {
       let optionIndex = `${questionIndex}.${index}`;
       return (
         <label
-          className={`option unrevealed-option ${
-            selections[questionIndex] === index ? "selected-option" : ""
+          className={`option ${
+            selections[questionIndex] === index ? "selected-option" : "unrevealed-option"
           }`}
           key={optionIndex}
           htmlFor={optionIndex}
-          onClick={() => updateUserChoice(questionIndex, index)} // Pass as a callback
+          onClick={() => updateUserChoice(questionIndex, index)}
         >
           <input
+            hidden
             type="radio"
             name={questionIndex}
             id={optionIndex}
