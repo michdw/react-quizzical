@@ -12,9 +12,17 @@
 }
 
 .correct-answer {
-    background: darkgreen;
+    background: green;
 }
 
 .incorrect-answer {
     background-color: black;
+}
+
+.navigation button {
+    margin: 1em;
+}
+
+.user-choice {
+    background-color: turquoise
 }
