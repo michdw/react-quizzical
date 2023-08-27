@@ -5,8 +5,10 @@ import { decode } from "html-entities";
 export default function Quiz(props) {
   const [quiz, setQuiz] = React.useState();
   const [active, setActive] = React.useState(false);
-  const [selections, setSelections] = React.useState([null, null, null]);
+  const [selections, setSelections] = React.useState(props.userSelections);
   const dataFetchedRef = React.useRef(false);
+
+
 
   React.useEffect(() => {
     if (dataFetchedRef.current) return;
@@ -15,22 +17,22 @@ export default function Quiz(props) {
   });
 
   const updateUserChoice = (questionIndex, index) => {
-    setSelections((prevSelections) => { 
-      const newSelections = [...prevSelections]
-      newSelections[questionIndex] = index
-      // console.log(selections)
-      return newSelections
-    })
+    setSelections((prevSelections) => {
+      const newSelections = [...prevSelections];
+      newSelections[questionIndex] = index;
+      console.log(selections)
+      return newSelections;
+    });
   };
 
   function toggleActive() {
     setActive(!active);
     if (active) getNewQuiz();
-    if (!active) toggleShowAnswers(true);
+    if (!active) showAnswers();
   }
 
   function getNewQuiz() {
-    fetch("https://opentdb.com/api.php?amount=3").then((resp) =>
+    fetch(`https://opentdb.com/api.php?amount=${props.quizLength}`).then((resp) =>
       resp
         .json()
         .then((data) => {
@@ -39,29 +41,23 @@ export default function Quiz(props) {
         })
         .catch((error) => console.log(error))
     );
-    toggleShowAnswers(false);
   }
 
-  function toggleShowAnswers(show) {
+  function showAnswers() {
     const correctAnswers = document.querySelectorAll('[data-correct="true"]');
-    correctAnswers.forEach((element) => {
-      show
-        ? element.classList.remove("unrevealed-option")
-        : element.classList.add("unrevealed-option");
-      show
-        ? element.classList.add("correct-answer")
-        : element.classList.remove("correct-answer");
-    });
     const incorrectAnswers = document.querySelectorAll(
       '[data-correct="false"]'
     );
+    correctAnswers.forEach((element) => {
+      let cl = element.classList;
+      cl.remove("unrevealed-option");
+      cl.contains("selected-option") ? cl.add("selected-correct") : cl.add("correct-option")
+      cl.remove("selected-option");
+    });
     incorrectAnswers.forEach((element) => {
-      show
-        ? element.classList.remove("unrevealed-option")
-        : element.classList.add("unrevealed-option");
-      show
-        ? element.classList.add("incorrect-answer")
-        : element.classList.remove("incorrect-answer");
+      let cl = element.classList;
+      cl.remove("unrevealed-option");
+      cl.contains("selected-option") ? cl.add("selected-incorrect") : cl.add("incorrect-option")
     });
   }
 
@@ -74,10 +70,13 @@ export default function Quiz(props) {
       return (
         <label
           className={`option ${
-            selections[questionIndex] === index ? "selected-option" : "unrevealed-option"
+            selections[questionIndex] === index
+              ? "selected-option"
+              : "unrevealed-option"
           }`}
           key={optionIndex}
           htmlFor={optionIndex}
+          data-correct={result.correct_answer === option}
           onClick={() => updateUserChoice(questionIndex, index)}
         >
           <input

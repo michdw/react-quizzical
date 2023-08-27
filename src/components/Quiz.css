@@ -1,28 +1,31 @@
 .question {
-    font-weight: bold;
+  font-weight: bold;
 }
 
 .option {
-    color: white;
-    margin: 0 1em
+  color: white;
+  margin: 0 1em;
 }
 
 .unrevealed-option {
-    background-color: gray;
+  background-color: gray;
 }
-
-.correct-answer {
-    background: green;
+.selected-option {
+  background-color: turquoise;
 }
-
-.incorrect-answer {
-    background-color: black;
+.correct-option {
+  background: lightgreen;
+}
+.incorrect-option {
+  background-color: black;
+}
+.selected-correct {
+  background-color: darkgreen;
+}
+.selected-incorrect {
+  background-color: darkred;
 }
 
 .navigation button {
-    margin: 1em;
-}
-
-.selected-option {
-    background-color: turquoise
+  margin: 1em;
 }
