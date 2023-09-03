@@ -8,8 +8,6 @@ export default function Quiz(props) {
   const [selections, setSelections] = React.useState(props.userSelections);
   const dataFetchedRef = React.useRef(false);
 
-
-
   React.useEffect(() => {
     if (dataFetchedRef.current) return;
     dataFetchedRef.current = true;
@@ -61,7 +59,7 @@ export default function Quiz(props) {
     });
   }
 
-  function getOptions(result, questionIndex) {
+  function showOptions(result, questionIndex) {
     let allOptions = [...result.incorrect_answers]
       .concat(result.correct_answer)
       .sort();
@@ -97,7 +95,7 @@ export default function Quiz(props) {
       <div key={index}>
         <p className="question">{decode(result.question)}</p>
         <div>
-          <div>{getOptions(result, index)}</div>
+          <div>{showOptions(result, index)}</div>
         </div>
       </div>
     ))
