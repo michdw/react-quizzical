@@ -5,7 +5,7 @@ import Quiz from "./components/Quiz";
 
 export default function App() {
   const [page, setPage] = React.useState("start");
-  const quizLength = 4;
+  const quizLength = 5;
 
 
   const switchPage = function (switchTo) {
