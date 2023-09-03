@@ -4,11 +4,14 @@ import { decode } from "html-entities";
 
 export default function Quiz(props) {
   const userSelections = () => refreshSelections();
+  //state
   const [quiz, setQuiz] = React.useState();
-  const [active, setActive] = React.useState(false);
+  const [complete, setComplete] = React.useState(false);
   const [selections, setSelections] = React.useState(userSelections);
+  const [score, setScore] = React.useState(0);
+  //ref
   const dataFetchedRef = React.useRef(false);
-
+  //effect
   React.useEffect(() => {
     if (dataFetchedRef.current) return;
     dataFetchedRef.current = true;
@@ -19,7 +22,6 @@ export default function Quiz(props) {
     setSelections((prevSelections) => {
       const newSelections = [...prevSelections];
       newSelections[questionIndex] = index;
-      console.log(selections);
       return newSelections;
     });
   }
@@ -33,7 +35,7 @@ export default function Quiz(props) {
   }
 
   function refreshOptionClasses() {
-    const allOptions = document.getElementsByClassName("option")
+    const allOptions = document.getElementsByClassName("option");
     const optionsArray = [...allOptions];
     optionsArray.forEach((option) => {
       let cl = option.classList;
@@ -43,19 +45,21 @@ export default function Quiz(props) {
       cl.remove("unselected-correct");
       cl.remove("unselected-incorrect");
       cl.remove("selected-incorrect");
-      cl.add("unrevealed-option")
-      console.log(cl)
-    })
+      cl.add("unrevealed-option");
+    });
   }
 
-  function toggleActive() {
-    setActive(!active);
-    if (active) {
-      getNewQuiz();
-      setSelections(refreshSelections());
-      refreshOptionClasses();
-    }
-    if (!active) showAnswers();
+  function startQuiz() {
+    setScore(0);
+    getNewQuiz();
+    setSelections(refreshSelections());
+    refreshOptionClasses();
+    setComplete(false)
+  }
+
+  function finishQuiz() {
+    getScore();
+    setComplete(true)
   }
 
   function getNewQuiz() {
@@ -71,7 +75,7 @@ export default function Quiz(props) {
     );
   }
 
-  function showAnswers() {
+  function getScore() {
     const correctAnswers = document.querySelectorAll('[data-correct="true"]');
     const incorrectAnswers = document.querySelectorAll(
       '[data-correct="false"]'
@@ -79,10 +83,12 @@ export default function Quiz(props) {
     correctAnswers.forEach((element) => {
       let cl = element.classList;
       cl.remove("unrevealed-option");
-      cl.contains("selected-option")
-        ? cl.add("selected-correct")
-        : cl.add("unselected-correct");
-      cl.remove("selected-option");
+      if (cl.contains("selected-option")) {
+        cl.add("selected-correct");
+        setScore(score => score + 1)
+      } else {
+        cl.add("unselected-correct");
+      }
     });
     incorrectAnswers.forEach((element) => {
       let cl = element.classList;
@@ -122,7 +128,7 @@ export default function Quiz(props) {
         </label>
       );
     });
-  }
+  };
 
   const quizData = dataFetchedRef.current ? (
     quiz.results.map((result, index) => (
@@ -137,21 +143,21 @@ export default function Quiz(props) {
     <div>loading</div>
   );
 
-  const actionButton = () => {
-    let startOrShow = active ? "start new quiz" : "show answers";
-    return (
-      <button disabled={!dataFetchedRef.current} onClick={toggleActive}>
-        {startOrShow}
-      </button>
-    );
+  const startButton = () => {
+    return <button onClick={startQuiz}>Start New Quiz</button>;
+  };
+
+  const showButton = () => {
+    return <button onClick={finishQuiz} disabled={selections.includes(null)}>Show Answers</button>;
   };
 
   return (
     <div className="quizPage">
       <h1>quiz page</h1>
       {quizData}
+      {complete && <p>{score} out of {props.quizLength}</p>}
       <div className="navigation">
-        {actionButton()}
+        {complete ? startButton() : showButton()}
         <button onClick={props.loadStartPage}>Home</button>
       </div>
     </div>
