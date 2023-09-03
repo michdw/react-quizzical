@@ -3,9 +3,10 @@ import "./Quiz.css";
 import { decode } from "html-entities";
 
 export default function Quiz(props) {
+  const userSelections = () => refreshSelections();
   const [quiz, setQuiz] = React.useState();
   const [active, setActive] = React.useState(false);
-  const [selections, setSelections] = React.useState(props.userSelections);
+  const [selections, setSelections] = React.useState(userSelections);
   const dataFetchedRef = React.useRef(false);
 
   React.useEffect(() => {
@@ -14,30 +15,59 @@ export default function Quiz(props) {
     getNewQuiz();
   });
 
-  const updateUserChoice = (questionIndex, index) => {
+  function updateUserChoice(questionIndex, index) {
     setSelections((prevSelections) => {
       const newSelections = [...prevSelections];
       newSelections[questionIndex] = index;
-      console.log(selections)
+      console.log(selections);
       return newSelections;
     });
-  };
+  }
+
+  function refreshSelections() {
+    const newSelections = [];
+    for (let i = 0; i < props.quizLength; i++) {
+      newSelections.push(null);
+    }
+    return newSelections;
+  }
+
+  function refreshOptionClasses() {
+    const allOptions = document.getElementsByClassName("option")
+    const optionsArray = [...allOptions];
+    optionsArray.forEach((option) => {
+      let cl = option.classList;
+      cl.remove("selected-option");
+      cl.remove("selected-correct");
+      cl.remove("selected-incorrect");
+      cl.remove("unselected-correct");
+      cl.remove("unselected-incorrect");
+      cl.remove("selected-incorrect");
+      cl.add("unrevealed-option")
+      console.log(cl)
+    })
+  }
 
   function toggleActive() {
     setActive(!active);
-    if (active) getNewQuiz();
+    if (active) {
+      getNewQuiz();
+      setSelections(refreshSelections());
+      refreshOptionClasses();
+    }
     if (!active) showAnswers();
   }
 
   function getNewQuiz() {
-    fetch(`https://opentdb.com/api.php?amount=${props.quizLength}`).then((resp) =>
-      resp
-        .json()
-        .then((data) => {
-          setQuiz(data);
-          console.log(data);
-        })
-        .catch((error) => console.log(error))
+    fetch(`https://opentdb.com/api.php?amount=${props.quizLength}`).then(
+      (resp) =>
+        resp
+          .json()
+          .then((data) => {
+            setQuiz(data);
+            console.log(data);
+          })
+          .catch((error) => console.log(error))
     );
   }
 
@@ -49,17 +79,21 @@ export default function Quiz(props) {
     correctAnswers.forEach((element) => {
       let cl = element.classList;
       cl.remove("unrevealed-option");
-      cl.contains("selected-option") ? cl.add("selected-correct") : cl.add("correct-option")
+      cl.contains("selected-option")
+        ? cl.add("selected-correct")
+        : cl.add("unselected-correct");
       cl.remove("selected-option");
     });
     incorrectAnswers.forEach((element) => {
       let cl = element.classList;
       cl.remove("unrevealed-option");
-      cl.contains("selected-option") ? cl.add("selected-incorrect") : cl.add("incorrect-option")
+      cl.contains("selected-option")
+        ? cl.add("selected-incorrect")
+        : cl.add("unselected-incorrect");
     });
   }
 
-  function showOptions(result, questionIndex) {
+  const showOptions = (result, questionIndex) => {
     let allOptions = [...result.incorrect_answers]
       .concat(result.correct_answer)
       .sort();
@@ -104,10 +138,10 @@ export default function Quiz(props) {
   );
 
   const actionButton = () => {
-    let btnText = active ? "start new quiz" : "show answers";
+    let startOrShow = active ? "start new quiz" : "show answers";
     return (
       <button disabled={!dataFetchedRef.current} onClick={toggleActive}>
-        {btnText}
+        {startOrShow}
       </button>
     );
   };

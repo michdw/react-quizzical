@@ -5,14 +5,8 @@ import Quiz from "./components/Quiz";
 
 export default function App() {
   const [page, setPage] = React.useState("start");
-  const quizLength = 5;
-  const userSelections = () => {
-    const newSelections = [];
-    for (let i = 0; i < quizLength; i++) {
-      newSelections.push(null);
-    }
-    return newSelections;
-  };
+  const quizLength = 4;
+
 
   const switchPage = function (switchTo) {
     switch (switchTo) {
@@ -38,7 +32,6 @@ export default function App() {
   const quizPage = (
     <Quiz
       quizLength={quizLength}
-      userSelections={userSelections}
       loadStartPage={() => switchPage("start")}
     />
   );

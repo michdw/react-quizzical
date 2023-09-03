@@ -13,11 +13,11 @@
 .selected-option {
   background-color: turquoise;
 }
-.correct-option {
+.unselected-correct {
   background: lightgreen;
 }
-.incorrect-option {
-  background-color: black;
+.unselected-incorrect {
+  background-color: rgb(34, 34, 34);
 }
 .selected-correct {
   background-color: darkgreen;
