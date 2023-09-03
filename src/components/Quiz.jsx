@@ -18,6 +18,16 @@ export default function Quiz(props) {
     getNewQuiz();
   });
 
+  function shuffleArray (array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      const temp = array[i];
+      array[i] = array[j];
+      array[j] = temp;
+    } 
+    return array;
+  };
+
   function refreshSelections() {
     const newSelections = [];
     for (let i = 0; i < props.quizLength; i++) {
@@ -26,7 +36,7 @@ export default function Quiz(props) {
     return newSelections;
   }
 
-    function updateUserChoice(questionIndex, index) {
+  function updateUserChoice(questionIndex, index) {
     setSelections((prevSelections) => {
       const newSelections = [...prevSelections];
       newSelections[questionIndex] = index;
@@ -48,11 +58,14 @@ export default function Quiz(props) {
   }
 
   const answerOptions = (result) => {
-    let allOptions = [...result.incorrect_answers]
-      .concat(result.correct_answer)
-      .sort();
+    let allOptions = shuffleArray([...result.incorrect_answers]
+      .concat(result.correct_answer));
+    // allOptions = shuffleArray(allOptions)
+
+
+
     return allOptions.map((option, index) => <span key={index}>{option}</span>);
-  }
+  };
 
   const quizData = dataFetchedRef.current ? (
     quiz.results.map((result, index) => (
@@ -67,8 +80,6 @@ export default function Quiz(props) {
 
   return <div>{quizData}</div>;
 }
-
-
 
 //   function refreshOptionClasses() {
 //     const allOptions = document.getElementsByClassName("option");
