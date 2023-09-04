@@ -3,15 +3,15 @@ import "./Quiz.css";
 import { decode } from "html-entities";
 
 export default function Quiz(props) {
-  const userSelections = () => eraseSelections();
+  const dataFetchedRef = React.useRef(false);
+
   //state
   const [quiz, setQuiz] = React.useState();
   const [options, setOptions] = React.useState([]);
-  const [selections, setSelections] = React.useState(userSelections);
+  const [selections, setSelections] = React.useState(emptySelections);
   const [score, setScore] = React.useState(0);
   const [complete, setComplete] = React.useState(false);
-  //ref
-  const dataFetchedRef = React.useRef(false);
+
   //effect
   React.useEffect(() => {
     if (dataFetchedRef.current) return;
@@ -19,9 +19,10 @@ export default function Quiz(props) {
   });
 
   React.useEffect(() => {
-    getNewQuiz()
+    getNewQuiz();
   }, []);
 
+  //helper methods
   function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -32,7 +33,40 @@ export default function Quiz(props) {
     return array;
   }
 
-  function eraseSelections() {
+  //component methods
+  function getNewQuiz() {
+    fetch(`https://opentdb.com/api.php?amount=${props.quizLength}`).then(
+      (resp) =>
+        resp
+          .json()
+          .then((data) => {
+            setQuiz(data);
+            setOptions(
+              data.results.map((result) => {
+                return shuffleArray(
+                  [...result.incorrect_answers].concat(result.correct_answer)
+                );
+              })
+            );
+          })
+          .catch((error) => console.log(error))
+    );
+  }
+
+  function startQuiz() {
+    hideAnswers();
+    setSelections(emptySelections);
+    setScore(0);
+    getNewQuiz();
+    setComplete(false);
+  }
+
+  function finishQuiz() {
+    getScore();
+    setComplete(true);
+  }
+
+  function emptySelections() {
     const newSelections = [];
     for (let i = 0; i < props.quizLength; i++) {
       newSelections.push(null);
@@ -46,50 +80,7 @@ export default function Quiz(props) {
       newSelections[qIndex] = oIndex;
       return newSelections;
     });
-  }
-
-  function hideAnswers() {
-    const allOptions = document.getElementsByClassName("option");
-    const optionsArray = [...allOptions];
-    optionsArray.forEach((option) => {
-      let cl = option.classList;
-      cl.remove("selected-option");
-      cl.remove("selected-correct");
-      cl.remove("selected-incorrect");
-      cl.remove("unselected-correct");
-      cl.remove("unselected-incorrect");
-      cl.remove("selected-incorrect");
-      cl.add("unrevealed-option");
-    });
-  }
-
-  function startQuiz() {
-    hideAnswers();
-    setSelections(eraseSelections());
-    setScore(0);
-    getNewQuiz();
-    setComplete(false);
-  }
-
-  function finishQuiz() {
-    getScore();
-    setComplete(true);
-  }
-
-  function getNewQuiz() {
-    fetch(`https://opentdb.com/api.php?amount=${props.quizLength}`).then(
-      (resp) =>
-        resp
-          .json()
-          .then((data) => {
-            setQuiz(data);
-            setOptions(data.results.map((result) => {
-              return shuffleArray([...result.incorrect_answers]
-                .concat(result.correct_answer));
-            }));
-          })
-          .catch((error) => console.log(error))
-    );
+    console.log(selections)
   }
 
   function getScore() {
@@ -116,6 +107,22 @@ export default function Quiz(props) {
     });
   }
 
+  function hideAnswers() {
+    const allOptions = document.getElementsByClassName("option");
+    const optionsArray = [...allOptions];
+    optionsArray.forEach((option) => {
+      let cl = option.classList;
+      cl.remove("selected-option");
+      cl.remove("selected-correct");
+      cl.remove("selected-incorrect");
+      cl.remove("unselected-correct");
+      cl.remove("unselected-incorrect");
+      cl.remove("selected-incorrect");
+      cl.add("unrevealed-option");
+    });
+  }
+
+  //elements
   const quizData = dataFetchedRef.current ? (
     quiz.results.map((result, qIndex) => (
       <div key={qIndex}>
@@ -138,7 +145,7 @@ export default function Quiz(props) {
                 <input
                   hidden
                   type="radio"
-                  name={qIndex}
+                  name={`question-${qIndex}`}
                   id={optionId}
                   value={option}
                 />
@@ -165,6 +172,7 @@ export default function Quiz(props) {
     );
   };
 
+  //
   return (
     <div className="quizPage">
       <h1>quiz page</h1>
