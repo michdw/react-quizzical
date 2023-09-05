@@ -1,31 +1,99 @@
-.question {
-  font-weight: bold;
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Karla:wght@700&display=swap");
+
+.quiz-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-.option {
-  color: white;
-  margin: 0 1em;
-}
-
-.unrevealed-option {
-  background-color: gray;
-}
-.selected-option {
-  background-color: turquoise;
-}
-.unselected-correct {
-  background: lightgreen;
-}
-.unselected-incorrect {
-  background-color: rgb(34, 34, 34);
-}
-.selected-correct {
-  background-color: darkgreen;
-}
-.selected-incorrect {
-  background-color: darkred;
+.question-panel {
+  width: 90%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 .navigation button {
   margin: 1em;
+}
+
+.question {
+  color: #293264;
+  font-family: "Karla", sans-serif;
+  font-size: 1.2em;
+  font-weight: bold;
+}
+
+.option {
+  border-radius: 0.8em;
+  padding: 0.5em 2em;
+  margin-right: 1.5em;
+}
+
+.option-text {
+  font-weight: 500;
+}
+
+.unrevealed-option {
+  outline: 1.5px solid #4d5b9e;
+}
+.unrevealed-option .option-text {
+  color: #293264;
+}
+
+.selected-option {
+  outline: none;
+  background: #d6dbf5;
+}
+.selected-option .option-text {
+  color: #293264;
+}
+
+.unselected-correct {
+  outline: none;
+  background: #94d7a2;
+}
+.unselected-correct .option-text {
+  color: #293264;
+}
+
+.unselected-incorrect {
+  outline: 1.5px solid #4d5b9ea0;
+}
+.unselected-incorrect .option-text {
+  color: #4D5B9Ea0;
+}
+
+.selected-correct {
+  outline: none;
+  background: #26502f;
+}
+.selected-correct .option-text {
+  color: #F5F7FB;
+}
+
+.selected-incorrect {
+  outline: none;
+  background: #f8bcbca0;
+}
+.selected-incorrect .option-text {
+  color: #4d5b9ea0;
+}
+
+hr {
+  margin-top: 2em;
+  width: 100%;
+  border: 1px solid #d6dbf5;
+}
+
+.score-info {
+  height: 1.4em;
+  font-size: 1.4em;
+  font-weight: bold;
+}
+
+.quiz-navigation button {
+  padding: 1em 2em;
+  margin-right: 1em;
 }

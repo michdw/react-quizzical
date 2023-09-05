@@ -5,6 +5,14 @@ import { decode } from "html-entities";
 export default function Quiz(props) {
   const dataFetchedRef = React.useRef(false);
 
+  const emptySelections = () => {
+    const newSelections = [];
+    for (let i = 0; i < props.quizLength; i++) {
+      newSelections.push(null);
+    }
+    return newSelections;
+  };
+
   //state
   const [quiz, setQuiz] = React.useState();
   const [options, setOptions] = React.useState([]);
@@ -66,21 +74,13 @@ export default function Quiz(props) {
     setComplete(true);
   }
 
-  function emptySelections() {
-    const newSelections = [];
-    for (let i = 0; i < props.quizLength; i++) {
-      newSelections.push(null);
-    }
-    return newSelections;
-  }
-
   function updateSelection(qIndex, oIndex) {
     setSelections((prevSelections) => {
       const newSelections = [...prevSelections];
       newSelections[qIndex] = oIndex;
       return newSelections;
     });
-    console.log(selections)
+    console.log(selections);
   }
 
   function getScore() {
@@ -125,7 +125,7 @@ export default function Quiz(props) {
   //elements
   const quizData = dataFetchedRef.current ? (
     quiz.results.map((result, qIndex) => (
-      <div key={qIndex}>
+      <div key={qIndex} className="question-panel">
         <p className="question">{decode(result.question)}</p>
         <div>
           {options[qIndex].map((option, oIndex) => {
@@ -149,11 +149,12 @@ export default function Quiz(props) {
                   id={optionId}
                   value={option}
                 />
-                <i>{decode(option)}</i>
+                <span className="option-text">{decode(option)}</span>
               </label>
             );
           })}
         </div>
+        <hr></hr>
       </div>
     ))
   ) : (
@@ -174,17 +175,18 @@ export default function Quiz(props) {
 
   //
   return (
-    <div className="quizPage">
-      <h1>quiz page</h1>
+    <div className="quiz-page">
       {quizData}
-      {complete && (
-        <p>
-          {score} out of {props.quizLength}
-        </p>
-      )}
-      <div className="navigation">
-        {complete ? startButton() : showButton()}
-        <button onClick={props.loadStartPage}>Home</button>
+      <div className="quiz-footer">
+        <div className="quiz-navigation">
+          {complete ? startButton() : showButton()}
+          <button onClick={props.loadStartPage}>Home</button>
+        </div>
+        {complete && (
+          <div className="score-info">
+            You scored {score}/{props.quizLength} correct answers
+          </div>
+        )}
       </div>
     </div>
   );
