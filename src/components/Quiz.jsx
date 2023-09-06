@@ -51,11 +51,18 @@ export default function Quiz(props) {
             setQuiz(data);
             setOptions(
               data.results.map((result) => {
-                return shuffleArray(
-                  [...result.incorrect_answers].concat(result.correct_answer)
-                );
+                let optionsArray = [...result.incorrect_answers]
+                .concat(result.correct_answer)
+                return result.type === "boolean"
+                  ? optionsArray
+                      .sort()
+                      .reverse()
+                  : shuffleArray(
+                      optionsArray
+                    );
               })
             );
+            console.log(data);
           })
           .catch((error) => console.log(error))
     );
@@ -178,15 +185,15 @@ export default function Quiz(props) {
     <div className="quiz-page">
       {quizData}
       <div className="quiz-footer">
-        <div className="quiz-navigation">
-          {complete ? startButton() : showButton()}
-          <button onClick={props.loadStartPage}>Home</button>
-        </div>
         {complete && (
           <div className="score-info">
             You scored {score}/{props.quizLength} correct answers
           </div>
         )}
+        <div className="quiz-navigation">
+          {complete ? startButton() : showButton()}
+          <button onClick={props.loadStartPage}>Home</button>
+        </div>
       </div>
     </div>
   );

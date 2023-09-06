@@ -26,13 +26,20 @@
 }
 
 .option {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  float: left;
   border-radius: 0.8em;
   padding: 0.5em 2em;
+  margin-bottom: 10px;
   margin-right: 1.5em;
 }
 
 .option-text {
   font-weight: 500;
+  white-space: nowrap;
 }
 
 .unrevealed-option {
@@ -62,7 +69,7 @@
   outline: 1.5px solid #4d5b9ea0;
 }
 .unselected-incorrect .option-text {
-  color: #4D5B9Ea0;
+  color: #4d5b9ea0;
 }
 
 .selected-correct {
@@ -70,7 +77,7 @@
   background: #26502f;
 }
 .selected-correct .option-text {
-  color: #F5F7FB;
+  color: #f5f7fb;
 }
 
 .selected-incorrect {
@@ -93,7 +100,17 @@ hr {
   font-weight: bold;
 }
 
+.quiz-footer {
+  padding-bottom: 1em;
+}
+
+.quiz-navigation {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
 .quiz-navigation button {
-  padding: 1em 2em;
-  margin-right: 1em;
+  padding: .8em 2em;
+  gap: 100px;
 }
