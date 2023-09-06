@@ -1,38 +1,81 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Karla:wght@700&display=swap");
+
+body {
+  background: #F5F7FB;
+}
+
 .App {
+  height: 100%;
   text-align: center;
+  font-family: "Inter", sans-serif;
+  color: #293264;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.bgLayer {
+  z-index: 0;
+  position: absolute;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.blob-1 {
+/* blob 5 */
+
+position: absolute;
+left: 62.24%;
+right: -62.24%;
+top: 161.16%;
+bottom: -161.16%;
+
+/* Lemony - medium */
+background: #FFFAD1;
+transform: rotate(-128.49deg);
+
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+Start, Quiz {
+  z-index: 99;
+}
+
+.start-page {
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  flex-direction: column;
+  height: 100vh;
 }
 
-.App-link {
-  color: #61dafb;
+.start-page h1 {
+  font-size: 3em;
+  padding: 0;
+  margin: 0;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.header {
+  font-family: 'Karla', sans-serif;
+  font-weight: 700;
+}
+
+.subheader {
+  font-family: "Inter", sans-serif;
+  font-weight: 400;
+  font-size: 1.4em;
+}
+
+button {
+  border: none;
+  background: #4d5b9e;
+  color: #f5f7fb;
+  border-radius: 1em;
+  font-size: 1.2em;
+}
+
+button:disabled { 
+  background: #4d5b9ea0;
+}
+
+.start-btn {
+  padding: 1em 4em;
+  font-family: "Inter", sans-serif;
+  font-weight: 500;
+  cursor: pointer;
 }

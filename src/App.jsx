@@ -7,7 +7,6 @@ export default function App() {
   const [page, setPage] = React.useState("start");
   const quizLength = 5;
 
-
   const switchPage = function (switchTo) {
     switch (switchTo) {
       case "quiz":
@@ -30,11 +29,15 @@ export default function App() {
   const startPage = <Start loadQuizPage={() => switchPage("quiz")} />;
 
   const quizPage = (
-    <Quiz
-      quizLength={quizLength}
-      loadStartPage={() => switchPage("start")}
-    />
+    <Quiz quizLength={quizLength} loadStartPage={() => switchPage("start")} />
   );
 
-  return <div className="App">{getPage()}</div>;
+  return (
+    <div className="App">
+      <div className="bgLayer">
+
+      </div>
+      {getPage()}
+    </div>
+  );
 }

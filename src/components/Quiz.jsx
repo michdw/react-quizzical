@@ -3,47 +3,45 @@ import "./Quiz.css";
 import { decode } from "html-entities";
 
 export default function Quiz(props) {
-  const userSelections = () => refreshSelections();
-  //state
-  const [quiz, setQuiz] = React.useState();
-  const [complete, setComplete] = React.useState(false);
-  const [selections, setSelections] = React.useState(userSelections);
-  const [score, setScore] = React.useState(0);
-  //ref
   const dataFetchedRef = React.useRef(false);
-  //effect
-  React.useEffect(() => {
-    if (dataFetchedRef.current) return;
-    dataFetchedRef.current = true;
-    getNewQuiz();
-  });
 
-  function shuffleArray (array) {
-    for (let i = array.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      const temp = array[i];
-      array[i] = array[j];
-      array[j] = temp;
-    } 
-    return array;
-  };
-
-  function refreshSelections() {
+  const emptySelections = () => {
     const newSelections = [];
     for (let i = 0; i < props.quizLength; i++) {
       newSelections.push(null);
     }
     return newSelections;
+  };
+
+  //state
+  const [quiz, setQuiz] = React.useState();
+  const [options, setOptions] = React.useState([]);
+  const [selections, setSelections] = React.useState(emptySelections);
+  const [score, setScore] = React.useState(0);
+  const [complete, setComplete] = React.useState(false);
+
+  //effect
+  React.useEffect(() => {
+    if (dataFetchedRef.current) return;
+    dataFetchedRef.current = true;
+  });
+
+  React.useEffect(() => {
+    getNewQuiz();
+  }, []);
+
+  //helper methods
+  function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      const temp = array[i];
+      array[i] = array[j];
+      array[j] = temp;
+    }
+    return array;
   }
 
-  function updateUserChoice(questionIndex, index) {
-    setSelections((prevSelections) => {
-      const newSelections = [...prevSelections];
-      newSelections[questionIndex] = index;
-      return newSelections;
-    });
-  }
-
+  //component methods
   function getNewQuiz() {
     fetch(`https://opentdb.com/api.php?amount=${props.quizLength}`).then(
       (resp) =>
@@ -51,162 +49,152 @@ export default function Quiz(props) {
           .json()
           .then((data) => {
             setQuiz(data);
+            setOptions(
+              data.results.map((result) => {
+                let optionsArray = [...result.incorrect_answers]
+                .concat(result.correct_answer)
+                return result.type === "boolean"
+                  ? optionsArray
+                      .sort()
+                      .reverse()
+                  : shuffleArray(
+                      optionsArray
+                    );
+              })
+            );
             console.log(data);
           })
           .catch((error) => console.log(error))
     );
   }
 
-  const answerOptions = (result) => {
-    let allOptions = shuffleArray([...result.incorrect_answers]
-      .concat(result.correct_answer));
-    // allOptions = shuffleArray(allOptions)
+  function startQuiz() {
+    hideAnswers();
+    setSelections(emptySelections);
+    setScore(0);
+    getNewQuiz();
+    setComplete(false);
+  }
 
+  function finishQuiz() {
+    getScore();
+    setComplete(true);
+  }
 
+  function updateSelection(qIndex, oIndex) {
+    setSelections((prevSelections) => {
+      const newSelections = [...prevSelections];
+      newSelections[qIndex] = oIndex;
+      return newSelections;
+    });
+    console.log(selections);
+  }
 
-    return allOptions.map((option, index) => <span key={index}>{option}</span>);
-  };
+  function getScore() {
+    const correctAnswers = document.querySelectorAll('[data-correct="true"]');
+    const incorrectAnswers = document.querySelectorAll(
+      '[data-correct="false"]'
+    );
+    correctAnswers.forEach((element) => {
+      let cl = element.classList;
+      cl.remove("unrevealed-option");
+      if (cl.contains("selected-option")) {
+        cl.add("selected-correct");
+        setScore((score) => score + 1);
+      } else {
+        cl.add("unselected-correct");
+      }
+    });
+    incorrectAnswers.forEach((element) => {
+      let cl = element.classList;
+      cl.remove("unrevealed-option");
+      cl.contains("selected-option")
+        ? cl.add("selected-incorrect")
+        : cl.add("unselected-incorrect");
+    });
+  }
 
+  function hideAnswers() {
+    const allOptions = document.getElementsByClassName("option");
+    const optionsArray = [...allOptions];
+    optionsArray.forEach((option) => {
+      let cl = option.classList;
+      cl.remove("selected-option");
+      cl.remove("selected-correct");
+      cl.remove("selected-incorrect");
+      cl.remove("unselected-correct");
+      cl.remove("unselected-incorrect");
+      cl.remove("selected-incorrect");
+      cl.add("unrevealed-option");
+    });
+  }
+
+  //elements
   const quizData = dataFetchedRef.current ? (
-    quiz.results.map((result, index) => (
-      <div key={index}>
+    quiz.results.map((result, qIndex) => (
+      <div key={qIndex} className="question-panel">
         <p className="question">{decode(result.question)}</p>
-        <div className="options">{answerOptions(result)}</div>
+        <div>
+          {options[qIndex].map((option, oIndex) => {
+            let optionId = `${qIndex}.${oIndex}`;
+            return (
+              <label
+                className={`option ${
+                  selections[qIndex] === oIndex
+                    ? "selected-option"
+                    : "unrevealed-option"
+                }`}
+                key={optionId}
+                htmlFor={optionId}
+                data-correct={result.correct_answer === option}
+                onClick={() => updateSelection(qIndex, oIndex)}
+              >
+                <input
+                  hidden
+                  type="radio"
+                  name={`question-${qIndex}`}
+                  id={optionId}
+                  value={option}
+                />
+                <span className="option-text">{decode(option)}</span>
+              </label>
+            );
+          })}
+        </div>
+        <hr></hr>
       </div>
     ))
   ) : (
     <div>loading</div>
   );
 
-  return <div>{quizData}</div>;
+  const startButton = () => {
+    return <button onClick={startQuiz}>Start New Quiz</button>;
+  };
+
+  const showButton = () => {
+    return (
+      <button onClick={finishQuiz} disabled={selections.includes(null)}>
+        Show Answers
+      </button>
+    );
+  };
+
+  //
+  return (
+    <div className="quiz-page">
+      {quizData}
+      <div className="quiz-footer">
+        {complete && (
+          <div className="score-info">
+            You scored {score}/{props.quizLength} correct answers
+          </div>
+        )}
+        <div className="quiz-navigation">
+          {complete ? startButton() : showButton()}
+          <button onClick={props.loadStartPage}>Home</button>
+        </div>
+      </div>
+    </div>
+  );
 }
-
-//   function refreshOptionClasses() {
-//     const allOptions = document.getElementsByClassName("option");
-//     const optionsArray = [...allOptions];
-//     optionsArray.forEach((option) => {
-//       let cl = option.classList;
-//       cl.remove("selected-option");
-//       cl.remove("selected-correct");
-//       cl.remove("selected-incorrect");
-//       cl.remove("unselected-correct");
-//       cl.remove("unselected-incorrect");
-//       cl.remove("selected-incorrect");
-//       cl.add("unrevealed-option");
-//     });
-//   }
-
-//   function startQuiz() {
-//     setScore(0);
-//     getNewQuiz();
-//     setSelections(refreshSelections());
-//     refreshOptionClasses();
-//     setComplete(false)
-//   }
-
-//   function finishQuiz() {
-//     getScore();
-//     setComplete(true)
-//   }
-
-//   function getNewQuiz() {
-//     fetch(`https://opentdb.com/api.php?amount=${props.quizLength}`).then(
-//       (resp) =>
-//         resp
-//           .json()
-//           .then((data) => {
-//             setQuiz(data);
-//             console.log(data);
-//           })
-//           .catch((error) => console.log(error))
-//     );
-//   }
-
-//   function getScore() {
-//     const correctAnswers = document.querySelectorAll('[data-correct="true"]');
-//     const incorrectAnswers = document.querySelectorAll(
-//       '[data-correct="false"]'
-//     );
-//     correctAnswers.forEach((element) => {
-//       let cl = element.classList;
-//       cl.remove("unrevealed-option");
-//       if (cl.contains("selected-option")) {
-//         cl.add("selected-correct");
-//         setScore(score => score + 1)
-//       } else {
-//         cl.add("unselected-correct");
-//       }
-//     });
-//     incorrectAnswers.forEach((element) => {
-//       let cl = element.classList;
-//       cl.remove("unrevealed-option");
-//       cl.contains("selected-option")
-//         ? cl.add("selected-incorrect")
-//         : cl.add("unselected-incorrect");
-//     });
-//   }
-
-//   const showOptions = (result, questionIndex) => {
-//     let allOptions = [...result.incorrect_answers]
-//       .concat(result.correct_answer)
-//       .sort();
-//     return allOptions.map((option, index) => {
-//       let optionIndex = `${questionIndex}.${index}`;
-//       return (
-//         <label
-//           className={`option ${
-//             selections[questionIndex] === index
-//               ? "selected-option"
-//               : "unrevealed-option"
-//           }`}
-//           key={optionIndex}
-//           htmlFor={optionIndex}
-//           data-correct={result.correct_answer === option}
-//           onClick={() => updateUserChoice(questionIndex, index)}
-//         >
-//           <input
-//             hidden
-//             type="radio"
-//             name={questionIndex}
-//             id={optionIndex}
-//             value={option}
-//           />
-//           <i>{decode(option)}</i>
-//         </label>
-//       );
-//     });
-//   };
-
-//   const quizData = dataFetchedRef.current ? (
-//     quiz.results.map((result, index) => (
-//       <div key={index}>
-//         <p className="question">{decode(result.question)}</p>
-//         <div>
-//           <div>{showOptions(result, index)}</div>
-//         </div>
-//       </div>
-//     ))
-//   ) : (
-//     <div>loading</div>
-//   );
-
-//   const startButton = () => {
-//     return <button onClick={startQuiz}>Start New Quiz</button>;
-//   };
-
-//   const showButton = () => {
-//     return <button onClick={finishQuiz} disabled={selections.includes(null)}>Show Answers</button>;
-//   };
-
-//   return (
-//     <div className="quizPage">
-//       <h1>quiz page</h1>
-//       {quizData}
-//       {complete && <p>{score} out of {props.quizLength}</p>}
-//       <div className="navigation">
-//         {complete ? startButton() : showButton()}
-//         <button onClick={props.loadStartPage}>Home</button>
-//       </div>
-//     </div>
-//   );
-// }
