@@ -10,27 +10,31 @@ body {
   text-align: center;
   font-family: "Inter", sans-serif;
   color: #293264;
+  display: grid;
+}
+
+Start, Quiz, .bgLayer {
+  grid-row: 1;
+  grid-column: 1;
+}
+
+Start, Quiz {
+  z-index: 1;
 }
 
 .bgLayer {
-  z-index: 0;
   position: absolute;
 }
 
-.blob-1 {
-/* blob 5 */
-
-position: absolute;
-left: 62.24%;
-right: -62.24%;
-top: 161.16%;
-bottom: -161.16%;
-
-/* Lemony - medium */
-background: #FFFAD1;
-transform: rotate(-128.49deg);
-
+.blob {
+  position: absolute;
+  z-index: -1;
 }
+
+.blob1 {
+  background: #000;
+}
+
 
 Start, Quiz {
   z-index: 99;
