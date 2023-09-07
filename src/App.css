@@ -26,12 +26,12 @@ Start, Quiz {
   position: absolute;
 }
 
-.blob {
+.shape {
   position: absolute;
   z-index: -1;
 }
 
-.blob1 {
+.shape1 {
   background: #000;
 }
 
