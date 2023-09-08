@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
 import "./Quiz.css";
 import { decode } from "html-entities";
 
@@ -14,19 +14,19 @@ export default function Quiz(props) {
   };
 
   //state
-  const [quiz, setQuiz] = React.useState();
-  const [options, setOptions] = React.useState([]);
-  const [selections, setSelections] = React.useState(emptySelections);
-  const [score, setScore] = React.useState(0);
-  const [complete, setComplete] = React.useState(false);
+  const [quiz, setQuiz] = useState();
+  const [options, setOptions] = useState([]);
+  const [selections, setSelections] = useState(emptySelections);
+  const [score, setScore] = useState(0);
+  const [complete, setComplete] = useState(false);
 
   //effect
-  React.useEffect(() => {
+  useEffect(() => {
     if (dataFetchedRef.current) return;
     dataFetchedRef.current = true;
   });
 
-  React.useEffect(() => {
+  useEffect(() => {
     getNewQuiz();
   }, []);
 
@@ -74,6 +74,7 @@ export default function Quiz(props) {
     setScore(0);
     getNewQuiz();
     setComplete(false);
+    props.resetShapes();
   }
 
   function finishQuiz() {

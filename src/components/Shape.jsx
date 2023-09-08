@@ -1,21 +1,31 @@
 import React from "react";
 
 export default function shape(props) {
+  const shapeWidth = window.innerWidth * 0.5;
+  const shapeHeight = window.innerHeight * 0.5;
+  const rotation = () => ~~(Math.random() * 360);
+  const upto = (max) => ~~(Math.random() * max);
+
   const styles = [
-    { transform: "translateX(100px)", top: "100px" },
-    { transform: "translateY(100px)", top: "200px" },
+    {
+      bottom: `${upto(70)}%`,
+      left: `${upto(70)}%`,
+      transform: `translate(-${upto(50)}%, ${upto(50)}%) rotate(${rotation()}deg)`,
+    },
+    {
+      top: `${upto(70)}%`,
+      right: `${upto(70)}%`,
+      transform: `translate(${upto(50)}%, -${upto(50)}%) rotate(${rotation()}deg)`,
+    },
   ];
-  const fillColors = [
-    "#FFFAD1",
-    "#DEEBF8"
-  ]
+  const fillColors = ["#DEEBF8", "#FFFAD1"];
 
   return (
     <svg
-      style={{ ...styles[props.index] }}
       className="shape"
-      width="201"
-      height="142"
+      style={{ ...styles[props.index] }}
+      width={shapeWidth}
+      height={shapeHeight}
       viewBox="0 0 201 142"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"

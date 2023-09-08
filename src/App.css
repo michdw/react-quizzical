@@ -19,25 +19,18 @@ Start, Quiz, .bgLayer {
 }
 
 Start, Quiz {
-  z-index: 1;
+  z-index: 99;
 }
 
 .bgLayer {
   position: absolute;
-}
-
-.shape {
-  position: absolute;
   z-index: -1;
 }
 
-.shape1 {
-  background: #000;
-}
-
-
-Start, Quiz {
-  z-index: 99;
+.shape {
+  position: fixed;
+  opacity: .8;
+  mix-blend-mode: multiply;
 }
 
 .start-page {
