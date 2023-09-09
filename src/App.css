@@ -45,6 +45,10 @@ button {
   font-size: 1.2em;
 }
 
+button:enabled {
+  cursor: pointer;
+}
+
 button:disabled { 
   background: #4d5b9ea0;
 }
