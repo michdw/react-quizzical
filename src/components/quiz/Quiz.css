@@ -1,10 +1,14 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Karla:wght@700&display=swap");
 
-.quiz-page {
+.Quiz {
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+hr {
+  margin-top: 2em;
+  width: 100%;
+  border: 1px solid #d6dbf5;
 }
 
 .question-panel {
@@ -14,16 +18,14 @@
   align-items: flex-start;
 }
 
-.navigation button {
-  margin: 1em;
-}
-
 .question {
   color: #293264;
   font-family: "Karla", sans-serif;
   font-size: 1.2em;
   font-weight: bold;
 }
+
+/* option classes */
 
 .option {
   white-space: nowrap;
@@ -88,20 +90,16 @@
   color: #4d5b9ea0;
 }
 
-hr {
-  margin-top: 2em;
-  width: 100%;
-  border: 1px solid #d6dbf5;
+/* footer */
+
+.quiz-footer {
+  padding-bottom: 1em;
 }
 
 .score-info {
   height: 1.4em;
   font-size: 1.4em;
   font-weight: bold;
-}
-
-.quiz-footer {
-  padding-bottom: 1em;
 }
 
 .quiz-navigation {

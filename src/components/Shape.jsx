@@ -19,7 +19,7 @@ export default function shape(props) {
 
   return (
     <svg
-      className="shape"
+      className="Shape"
       style={{ ...styles[props.index] }}
       width={window.innerWidth * 0.9}
       height={window.innerHeight * 0.9}

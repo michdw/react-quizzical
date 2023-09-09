@@ -1,7 +1,7 @@
 import "./App.css";
 import React, { useState, useEffect } from "react";
-import Start from "./components/Start";
-import Quiz from "./components/Quiz";
+import Start from "./components/start/Start";
+import Quiz from "./components/quiz/Quiz";
 import Shape from "./components/Shape";
 
 export default function App() {
@@ -46,9 +46,9 @@ export default function App() {
   );
 
   return (
-    <div className="App">
+    <section className="App">
       <div className="bgLayer">{shapes}</div>
       {getPage()}
-    </div>
+    </section>
   );
 }

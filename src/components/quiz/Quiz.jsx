@@ -163,7 +163,14 @@ export default function Quiz(props) {
       </div>
     ));
 
-  const loadingSpinner = <ClipLoader />;
+  const loadingSpinner = (
+    <ClipLoader
+      color={"#293264"}
+      cssOverride={{ margin: "3em" }}
+      size={100}
+      aria-label="Loading Spinner"
+    />
+  );
 
   const startButton = () => {
     return <button onClick={startQuiz}>Start New Quiz</button>;
@@ -179,9 +186,8 @@ export default function Quiz(props) {
 
   //
   return (
-    <div className="quiz-page">
-      {loadingSpinner}
-      {/* {dataFetchedRef.current ? quizData : loadingSpinner} */}
+    <section className="Quiz">
+      {dataFetchedRef.current ? quizData : loadingSpinner}
       <div className="quiz-footer">
         {complete && (
           <div className="score-info">
@@ -193,6 +199,6 @@ export default function Quiz(props) {
           <button onClick={props.loadStartPage}>Home</button>
         </div>
       </div>
-    </div>
+    </section>
   );
 }

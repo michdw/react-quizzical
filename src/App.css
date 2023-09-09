@@ -13,50 +13,29 @@ body {
   display: grid;
 }
 
-Start, Quiz, .bgLayer {
+.Start, .Quiz, .bgLayer {
   grid-row: 1;
   grid-column: 1;
 }
 
-Start, Quiz {
-  z-index: 99;
+.Start, .Quiz {
+  z-index: 1;
 }
+
+/* background shapes */
 
 .bgLayer {
   position: absolute;
   z-index: -1;
 }
 
-.shape {
+.Shape {
   position: fixed;
   opacity: .5;
   mix-blend-mode: multiply;
 }
 
-.start-page {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  height: 100vh;
-}
-
-.start-page h1 {
-  font-size: 3em;
-  padding: 0;
-  margin: 0;
-}
-
-.header {
-  font-family: 'Karla', sans-serif;
-  font-weight: 700;
-}
-
-.subheader {
-  font-family: "Inter", sans-serif;
-  font-weight: 400;
-  font-size: 1.4em;
-}
+/* general styles */
 
 button {
   border: none;
@@ -70,9 +49,13 @@ button:disabled {
   background: #4d5b9ea0;
 }
 
-.start-btn {
-  padding: 1em 4em;
+.header {
+  font-family: 'Karla', sans-serif;
+  font-weight: 700;
+}
+
+.subheader {
   font-family: "Inter", sans-serif;
-  font-weight: 500;
-  cursor: pointer;
+  font-weight: 400;
+  font-size: 1.4em;
 }
