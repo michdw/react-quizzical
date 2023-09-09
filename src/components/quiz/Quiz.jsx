@@ -27,9 +27,9 @@ export default function Quiz(props) {
     dataFetchedRef.current = true;
   });
 
-  useEffect(() => {
-    getNewQuiz();
-  }, []);
+  // useEffect(() => {
+  //   getNewQuiz();
+  // }, []);
 
   //helper methods
   function shuffleArray(array) {
