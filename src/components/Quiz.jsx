@@ -1,6 +1,7 @@
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import "./Quiz.css";
 import { decode } from "html-entities";
+import ClipLoader from "react-spinners/ClipLoader";
 
 export default function Quiz(props) {
   const dataFetchedRef = React.useRef(false);
@@ -51,18 +52,14 @@ export default function Quiz(props) {
             setQuiz(data);
             setOptions(
               data.results.map((result) => {
-                let optionsArray = [...result.incorrect_answers]
-                .concat(result.correct_answer)
+                let optionsArray = [...result.incorrect_answers].concat(
+                  result.correct_answer
+                );
                 return result.type === "boolean"
-                  ? optionsArray
-                      .sort()
-                      .reverse()
-                  : shuffleArray(
-                      optionsArray
-                    );
+                  ? optionsArray.sort().reverse()
+                  : shuffleArray(optionsArray);
               })
             );
-            console.log(data);
           })
           .catch((error) => console.log(error))
     );
@@ -78,7 +75,7 @@ export default function Quiz(props) {
   }
 
   function finishQuiz() {
-    getScore();
+    showAnswers();
     setComplete(true);
   }
 
@@ -88,10 +85,9 @@ export default function Quiz(props) {
       newSelections[qIndex] = oIndex;
       return newSelections;
     });
-    console.log(selections);
   }
 
-  function getScore() {
+  function showAnswers() {
     const correctAnswers = document.querySelectorAll('[data-correct="true"]');
     const incorrectAnswers = document.querySelectorAll(
       '[data-correct="false"]'
@@ -131,7 +127,8 @@ export default function Quiz(props) {
   }
 
   //elements
-  const quizData = dataFetchedRef.current ? (
+  const quizData =
+    dataFetchedRef.current &&
     quiz.results.map((result, qIndex) => (
       <div key={qIndex} className="question-panel">
         <p className="question">{decode(result.question)}</p>
@@ -164,10 +161,9 @@ export default function Quiz(props) {
         </div>
         <hr></hr>
       </div>
-    ))
-  ) : (
-    <div>loading</div>
-  );
+    ));
+
+  const loadingSpinner = <ClipLoader />;
 
   const startButton = () => {
     return <button onClick={startQuiz}>Start New Quiz</button>;
@@ -184,7 +180,8 @@ export default function Quiz(props) {
   //
   return (
     <div className="quiz-page">
-      {quizData}
+      {loadingSpinner}
+      {/* {dataFetchedRef.current ? quizData : loadingSpinner} */}
       <div className="quiz-footer">
         {complete && (
           <div className="score-info">
