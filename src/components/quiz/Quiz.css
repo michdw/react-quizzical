@@ -61,7 +61,7 @@ hr {
 
 .unselected-correct {
   outline: none;
-  background: #94d7a2;
+  background: #b6ddbe;
 }
 .unselected-correct .option-text {
   color: #293264;
@@ -76,7 +76,7 @@ hr {
 
 .selected-correct {
   outline: none;
-  background: #26502f;
+  background: #337140;
 }
 .selected-correct .option-text {
   color: #f5f7fb;
