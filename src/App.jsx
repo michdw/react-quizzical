@@ -9,7 +9,7 @@ export default function App() {
   const [shapes, setShapes] = useState([]);
   const quizLength = 5;
 
-  useEffect(() => generateShapes, []);
+  useEffect(() => generateShapes(), []);
 
   const switchPage = function (switchTo) {
     generateShapes();
