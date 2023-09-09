@@ -27,9 +27,10 @@ export default function Quiz(props) {
     dataFetchedRef.current = true;
   });
 
-  // useEffect(() => {
-  //   getNewQuiz();
-  // }, []);
+  useEffect(() => {
+    getNewQuiz();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   //helper methods
   function shuffleArray(array) {
